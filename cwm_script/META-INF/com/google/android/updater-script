@@ -1,0 +1,17 @@
+ui_print("Welcome to t0mm13b's ztebladefmd");
+ui_print("Warning: This is EXPERIMENTAL and not official!... ");
+ui_print("Extracting ztebladefmd binary to /system/usr/share/bin");
+mount("yaffs2", "MTD", "system", "/system");
+package_extract_dir("system", "/system");
+set_perm(0, 0, 0755, "/system/usr/share/ztebladefm/ztebladefmd");
+mount("yaffs2", "MTD", "userdata", "/data");
+run_program("/system/xbin/mknod", "-m 0755 /data/local/tmp/ztebladefmCmds p");
+ui_print("Created pipe ztebladefmCmds");
+run_program("/system/xbin/mknod", "-m 0755 /data/local/tmp/ztebladefmStats p");
+ui_print("Create pipe ztebladefmStats");
+unmount("/data");
+unmount("/system");
+ui_print("Permissions set so anyone can exec it... [no exploiting plzkthxbai :P] lulz");
+ui_print("Notify t0mm13b via forums or #zteblade for any feedback. Please reboot!");
+
+

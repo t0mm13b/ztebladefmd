@@ -40,7 +40,7 @@ void handle_frequency(const char *buf){
 #ifdef __t0mm13b_defiant__
     printf("Handle Radio Frequency!\n");
 #else
-	rv = ioctl(fd, FM_GET_CURRENTFREQ, &status);
+	rv = ioctl(g_rdfmdev, FM_GET_CURRENTFREQ, &status);
 #endif	
 	fprintf(g_fpwrstatpipe, "[FM_GETCURRENTFREQ] - rv = %d; status = %d\n", rv, status);
 }
@@ -55,9 +55,10 @@ void handle_reset(const char *buf){
 #else
     logmsg("Handling Radio Reset");
 #endif    
-    handle_band(reset_stg1);
-    handle_tunestep(reset_stg3);
-    handle_autoseek(reset_stg2);
+    return;
+    //handle_band(reset_stg1);
+    //handle_tunestep(reset_stg3);
+    //handle_autoseek(reset_stg2);
 }
 
 void handle_autoseek(const char *buf){
@@ -145,7 +146,7 @@ void handle_volume(const char *buf){
 #ifdef __t0mm13b_defiant__
             printf("Handle Radio Volume!\n");
 #else            
-            rv = ioctl(fd, FM_GET_VOL, &status);
+            rv = ioctl(g_rdfmdev, FM_GET_VOL, &status);
 #endif            
 			fprintf(g_fpwrstatpipe, "[FM_GET_VOL] - rv = %d; status = %d\n", rv, status);
         }else{
@@ -154,7 +155,7 @@ void handle_volume(const char *buf){
 #ifdef __t0mm13b_defiant__
                 printf("Handle Radio Volume @ %s converted to %d!\n", sVolume, vol);
 #else
-                rv = ioctl(fd, FM_SET_VOL, &vol);
+                rv = ioctl(g_rdfmdev, FM_SET_VOL, &vol);
 #endif
                 if (sVolume) free(sVolume);                        
                 fprintf(g_fpwrstatpipe, "[FM_SET_VOL] - rv = %d\n", rv);

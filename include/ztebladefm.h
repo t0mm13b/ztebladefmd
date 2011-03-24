@@ -24,7 +24,7 @@
 #define EXIT_SUCCESS            0
 #define EXIT_FAILURE            1
 /* Change this to the user under which to run */
-#define RUN_AS_USER             "t0mm13b"
+#define RUN_AS_USER             "root"
 #define DAEMON_NAME             "ztebladefmd"
 //
 #define LOGMSG_LEN              150
@@ -33,15 +33,15 @@
 #ifdef __t0mm13b_defiant__
 #define ZTEBLADEFM_LOCK         "/tmp/ztebladefm.lck"
 #else
-#define ZTEBLADEFM_LOCK         "/system/lost+found/ztebladefm.lck"
+#define ZTEBLADEFM_LOCK         "/data/local/tmp/ztebladefm.lck"
 #endif
 #define ZTEBLADEFMD_NM          "ztebladefmd"
 #ifdef __t0mm13b_defiant__
 #define ZTEBLADEFM_PIPE_CMD     "/tmp/ztebladefmCmds"
 #define ZTEBLADEFM_PIPE_STATUS  "/tmp/ztebladefmStats"    
 #else
-#define ZTEBLADEFM_PIPE_CMD     "/system/lost+found/ztebladefmCmds"
-#define ZTEBLADEFM_PIPE_STATUS  "/system/lost+found/ztebladefmStats" 
+#define ZTEBLADEFM_PIPE_CMD     "/data/local/tmp/ztebladefmCmds"
+#define ZTEBLADEFM_PIPE_STATUS  "/data/local/tmp/ztebladefmStats" 
 #endif
 #define FM_DEV	                "/dev/si4708"
 #define CMDS_LEN    12
