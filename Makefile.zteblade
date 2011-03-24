@@ -1,0 +1,26 @@
+.SUFFIXES: .c.o
+CC = agcc
+INCLUDE = -I./include -I~/ndk/include
+# Comment out one or the other, mutually exclusive all of the -D is for the regex stuff to be compiled in
+CFLAGS = -g -D_CUPS_SOURCE -DOPENSSL_DISABLE_OLD_DES_SUPPORT -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64  -D_THREAD_SAFE -D_REENTRANT -D_GNU_SOURCE -DHAVE_CONFIG_H -DSTDC_HEADERS
+# Debugging info
+#CFLAGS = -O2 # Optimize code
+LIBS = -L ~/ndk/lib -lc
+FILES = src/regcomp. o src/regerror.o src/regexec.o src/regfree.o src/ztebladefm_cmds.o  src/ztebladefm_daemonutils.o src/ztebladefm_main.o  src/ztebladefm_regexps.o
+APP = ztebladefmd
+
+.c.o:
+	$(CC) $(INCLUDE) $(CFLAGS) -o $@ -c $<
+ 
+all : $(APP)
+ 
+$(APP) : $(FILES)
+	$(CC) -o $@ $(FILES) $(LIBS) $(CFLAGS)
+ 
+clobber : clean mrproper
+ 
+clean:
+	rm -rf $(FILES)
+ 
+mrproper:
+	rm -rf $(APP)
