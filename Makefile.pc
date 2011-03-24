@@ -1,0 +1,27 @@
+.SUFFIXES: .c.o
+CC = gcc 
+INCLUDE = -I/usr/include 
+# Comment out one or the other, mutually exclusive
+CFLAGS = -g -D __t0mm13b_defiant__
+# Debugging info
+#CFLAGS = -O2 # Optimize code
+LIBS = -L /usr/lib 
+#LIBS = -L/usr/lib # Release
+FILES = ztebladefm_cmds.o  ztebladefm_daemonutils.o ztebladefm_main.o  ztebladefm_regexps.o
+APP = ztebladefmd
+
+.c.o:
+	$(CC) $(INCLUDE) $(CFLAGS) -c $<
+ 
+all : $(APP)
+ 
+$(APP) : $(FILES)
+	$(CC) -o $@ $(FILES) $(LIBS) $(CFLAGS)
+ 
+clobber : clean mrproper
+ 
+clean:
+	rm -rf $(FILES)
+ 
+mrproper:
+	rm -rf $(APP)

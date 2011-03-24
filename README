@@ -1,0 +1,50 @@
+ZTE Blade FM Daemon
+~~~~~~~~~~~~~~~~~~~
+
+A server daemon program that controls the radio.
+
+The Java GUI Front-End shall interact with this thus making it flexible and not dependant on the android base framework.
+
+The server is quite a simple daemon that creates two pipes, one for sending commands to it and the other for receiving statuses.
+
+The client: 
+	1. Opens the command pipe for writing and issues commands to control the radio.
+	2. Opens the status pipe for reading and grabs the statuses from the operation.
+
+As an example:
+	~ cat > ztebladefm_cmds
+		~ ON
+		~ TUNE 11280
+		~ VOLUME 13
+		~ Ctrl+D here or EOF
+
+	~ Radio is turned on and reset, tuned into station 112.80, volume adjusted to 13. 
+
+Simple you reckon? More cleaner and refined.
+
+The regex stuff is used for the pattern matching of the commands, using POSIX where concerned, the inclusion of the OpenBSD's sources
+ for the regex is under the BSD Licence. So please leave the credits in there if you intend to rip it.
+
+I have used the agcc perl script to handle the awkwardness of compiling straight C code using Android's NDK.
+
+The agcc can be found at http://plausible.org/agcc
+
+Source code laid out is as follows:
+	~ Makefile.pc - for dev efforts on Linux x86 platform.
+	~ Makefile.zteblade - for dev efforts on ZTE Blade.
+	~ ztebladefm_main.c - the main execution of the server.
+	~ ztebladefm_daemonutils.c - helper utilities for daemonizing code and logging.
+	~ ztebladefm_regexps.c - handles regexps for parsing the commands required and...
+	~ ztebladefm_cmds.c - the delegated functions corresponding to each command to do the ioctl calls to the chipset.
+
+There's two makefiles, on the x86 Linux platform, using the Linux gcc toolchain, will test out the daemon server. 
+Two of the pipes for commands, and status MUST be opened i.e:
+	~ cat > /tmp/ztebladefmdCmds # to send commands to the daemon
+	~ cat /tmp/ztebladefmdStats  # to see the outputs
+
+To run the daemon on the x86 Linux platform issue this:
+	~ ./ztebladefmd > ztebladefmd.output &
+
+To get the daemon running off the ZTE Blade, it is necessary to flash the daemon into a directory...
+
+To Be UPDATED shortly....
