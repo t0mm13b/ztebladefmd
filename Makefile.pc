@@ -2,10 +2,10 @@
 CC = gcc 
 INCLUDE = -I./include -I/usr/include 
 # Comment out one or the other, mutually exclusive
-CFLAGS = -g -D __t0mm13b_defiant__
+CFLAGS = -g -D __t0mm13b_defiant__ -D__USE_PCRE_REGEXP__
 # Debugging info
 #CFLAGS = -O2 # Optimize code
-LIBS = -L /usr/lib 
+LIBS = -L /usr/lib -lpcre
 #LIBS = -L/usr/lib # Release
 FILES = src/ztebladefm_cmds.o  src/ztebladefm_daemonutils.o src/ztebladefm_main.o  src/ztebladefm_regexps.o
 APP = ztebladefmd

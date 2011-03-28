@@ -24,9 +24,12 @@ int main(int argc, char **argv){
 
 static void tune_in(void){
     int selfd;
+    //logmsg("[%s: tune_in(...)] *** ENTER ***", __FILE__);
     init_signals();
-    lock_ourselves();
+    //logmsg("[%s: tune_in(...)] Signals initialized", __FILE__);
+    //lock_ourselves();
     init_regexps();
+    //logmsg("[%s: tune_in(...)] Regexps initialized", __FILE__);
     // BEGIN HERE
 #if __t0mm13b_defiant__
     int rv = mkfifo(ZTEBLADEFM_PIPE_CMD, 0666);

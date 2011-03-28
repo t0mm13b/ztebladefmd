@@ -1,6 +1,7 @@
 #include "ztebladefm.h"
 
 extern int g_keepRunning;
+static int g_exit_ip = 0;
 int g_lockfp_ztebladefmd = 0;
 static void signal_handler(int sig);
 static void dumpstack(void);
@@ -26,7 +27,7 @@ void daemonize( const char *lockfile )
             exit(EXIT_FAILURE);
         }
     }
-
+#ifdef __t0mm13b_defiant__
     /* Drop user if there is one, and we were run as root */
     if ( getuid() == 0 || geteuid() == 0 ) {
         struct passwd *pw = getpwnam(RUN_AS_USER);
@@ -35,12 +36,14 @@ void daemonize( const char *lockfile )
             setuid( pw->pw_uid );
         }
     }
+#endif
 
     /* Trap signals that we expect to recieve */
     signal(SIGCHLD,child_handler);
     signal(SIGUSR1,child_handler);
     signal(SIGALRM,child_handler);
 
+    //printf("Trapping signals within daemonize(...)\n");
     /* Fork off the parent process */
     pid = fork();
     if (pid < 0) {
@@ -69,9 +72,12 @@ void daemonize( const char *lockfile )
     signal(SIGHUP, SIG_IGN); /* Ignore hangup signal */
     signal(SIGTERM,SIG_DFL); /* Die on SIGTERM */
 
+    //printf("Cancelling certain signals....\n");
     /* Change the file mode mask */
     umask(0);
 
+    //printf("Changed the file mode mask...\n");
+    
     /* Create a new SID for the child process */
     sid = setsid();
     if (sid < 0) {
@@ -79,22 +85,26 @@ void daemonize( const char *lockfile )
         exit(EXIT_FAILURE);
     }
 
+    //printf("Created a new sid...\n");
     /* Change the current working directory.  This prevents the current
        directory from being locked; hence not being able to remove it. */
     if ((chdir("/")) < 0) {
         //syslog( LOG_ERR, "unable to change directory to %s, code %d (%s)",
         //        "/", errno, strerror(errno) );
-        logmsg("unable to change directory to %s, code %d (%s)", "/", errno, strerror(errno) );
+        logmsg("unable to change directory to /, code %d (%s)", errno, strerror(errno) );
         exit(EXIT_FAILURE);
     }
 
+    //printf("Changed dir to /\n");
     /* Redirect standard files to /dev/null */
-    //freopen( "/dev/null", "r", stdin);
-    //freopen( "/dev/null", "w", stdout);
-    //freopen( "/dev/null", "w", stderr);
+    freopen( "/dev/null", "r", stdin);
+    freopen( "/dev/null", "w", stdout);
+    freopen( "/dev/null", "w", stderr);
 
+    //logmsg("Redirected!");
     /* Tell the parent process that we are A-okay */
     kill( parent, SIGUSR1 );
+    //logmsg("Attaboy!\n");
 }
   
 static void child_handler(int signum)
@@ -117,11 +127,13 @@ void exithandler(void){
         //panic("[%s:tune_in(...) @ %d] - Could not unlink %s.", __FILE__, __LINE__, ZTEBLADEFM_PIPE_STATUS);
     }else logmsg("Cleaned up status pipe!");
 #endif
+    if (g_exit_ip) return;
     if (unlink(ZTEBLADEFM_LOCK) < 0) 
         logmsg("[%s:exithandler @ %d] - Could not unlink \'%s\'", __FILE__, __LINE__, ZTEBLADEFM_LOCK);
 
     sigemptyset(&g_sigact.sa_mask);
     logmsg("Terminated.");
+    if (!g_exit_ip) g_exit_ip++;
 }
 
 void init_signals(void){
@@ -199,8 +211,10 @@ static void dumpstack(void){
     /* Got this routine from http://www.whitefang.com/unix/faq_toc.html
     ** Section 6.5. Modified to redirect to file to prevent clutter
     */
+#ifdef __t0mm13b_defiant__    
     char dbx[160];
     sprintf(dbx, "echo -ne 'detach\n' | gdb --eval-command=where --pid=%d > %d.dump", getpid(), getpid());
     system(dbx);
+#endif    
     return;
 }

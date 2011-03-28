@@ -9,7 +9,12 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
+#ifdef __USE_POSIX_REGEXP__
 #include <regex.h>
+#endif
+#ifdef __USE_PCRE_REGEXP__
+#include <pcre.h> // Watch out when compiling...
+#endif
 #include <syslog.h>
 #include <pwd.h>
 #include <sys/types.h>
@@ -27,7 +32,7 @@
 #define RUN_AS_USER             "root"
 #define DAEMON_NAME             "ztebladefmd"
 //
-#define LOGMSG_LEN              150
+#define LOGMSG_LEN              256
 #define PANICBUF_LEN            256
 #define CMDBUF_LEN              100
 #ifdef __t0mm13b_defiant__
@@ -40,8 +45,8 @@
 #define ZTEBLADEFM_PIPE_CMD     "/tmp/ztebladefmCmds"
 #define ZTEBLADEFM_PIPE_STATUS  "/tmp/ztebladefmStats"    
 #else
-#define ZTEBLADEFM_PIPE_CMD     "/data/local/tmp/ztebladefmCmds"
-#define ZTEBLADEFM_PIPE_STATUS  "/data/local/tmp/ztebladefmStats" 
+#define ZTEBLADEFM_PIPE_CMD     "/data/local/tmp/ztebladefmdCmds"
+#define ZTEBLADEFM_PIPE_STATUS  "/data/local/tmp/ztebladefmdStats" 
 #endif
 #define FM_DEV	                "/dev/si4708"
 #define CMDS_LEN    12
@@ -55,7 +60,12 @@ FILE *g_fprdcmdpipe, *g_fpwrstatpipe;
 //
 struct Commands{
     const char *cmd;
+#ifdef __USE_POSIX_REGEXP__    
     regex_t cmdregexp;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    pcre *cmdregexp;
+#endif    
     int regexOk;
     fp_ptr fpCommandHandler;
 };
