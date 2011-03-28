@@ -45,6 +45,9 @@ Two of the pipes for commands, and status MUST be opened i.e:
 To run the daemon on the x86 Linux platform issue this:
 	~ ./ztebladefmd > ztebladefmd.output &
 
-To get the daemon running off the ZTE Blade, it is necessary to flash the daemon into a directory...
+To get the daemon running off the ZTE Blade, it is necessary to fpush  the daemon into a directory...
 
 To Be UPDATED shortly....
+
+Ok, PCRE is built and linked in, you will find the Makefile.pcre and the associated config.h/pcre.h necessary for the Android platform to
+compensate lack of standard posix regexps.
