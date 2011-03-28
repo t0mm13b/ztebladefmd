@@ -1,0 +1,70 @@
+.SUFFIXES: .c.o .cc.o
+#
+CC = agcc
+INCLUDE = -I/home/t0mm13b/pcre-8.12 -I/home/t0mm13b/ndk/include
+CFLAGS = -DHAVE_CONFIG_H -D_DEBUG -g -Wall
+#
+LD = /home/t0mm13b/AndroidRepo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ld
+#
+CXX = /home/t0mm13b/AndroidRepo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-g++
+CXXINCLUDE = -I/home/t0mm13b/pcre-8.12 -I/home/t0mm13b/ndk/include
+CXXFLAGS = -DHAVE_CONFIG_H -D_DEBUG -O0 -g -Wall 
+#
+AR = /home/t0mm13b/AndroidRepo/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-ar
+AR_OPT = -r
+#
+LIBPCRE_FILES = pcre_chartables.o \
+   pcre_compile.o \
+   pcre_config.o \
+   pcre_dfa_exec.o \
+   pcre_exec.o \
+   pcre_fullinfo.o \
+   pcre_get.o \
+   pcre_globals.o \
+   pcre_info.o \
+   pcre_maketables.o \
+   pcre_newline.o \
+   pcre_ord2utf8.o \
+   pcre_refcount.o \
+   pcre_study.o \
+   pcre_tables.o \
+   pcre_try_flipped.o \
+   pcre_ucd.o \
+   pcre_valid_utf8.o \
+   pcre_version.o \
+   pcre_xclass.o \
+   pcreposix.o
+#
+LIBPCRE = libpcre.a
+#
+LIBPCRECPP_FILES = pcre_scanner.o \
+   pcre_stringpiece.o \
+   pcrecpp.o
+#
+LIBPCRECPP = libpcrecpp.a
+#
+%.o: %.cc
+	$(CXX) $(CXXINCLUDE) $(CXXFLAGS) -c $<
+#
+%.o: %.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c $<
+#      
+all : $(LIBPCRE) $(LIBPCRECPP)
+#
+libpcre : $(LIBPCRE)
+#
+libpcrecpp : $(LIBPCRECPP)
+#
+$(LIBPCRE) : $(LIBPCRE_FILES)
+	$(AR) $(AR_OPT) $@ $(LIBPCRE_FILES)
+#
+$(LIBPCRECPP) : ./pcre.h $(LIBPCRECPP_FILES)
+	$(AR) $(AR_OPT) $@ $(LIBPCRECPP_FILES)
+#   
+clobber : clean mrproper
+#
+clean:
+	rm $(LIBPCRE_FILES) $(LIBPCRECPP_FILES)
+#
+mrproper:
+	rm $(LIBPCRE) $(LIBPCRECPP)

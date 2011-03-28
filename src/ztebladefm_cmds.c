@@ -63,10 +63,23 @@ void handle_reset(const char *buf){
 
 void handle_autoseek(const char *buf){
     int rv = 0, status = 0, len, dir = -1, freq = -1, cmdPrimOk = 0, ioctlparams[2];
+#ifdef __USE_POSIX_REGEXP__
     regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif    
     char *sCmdToken = NULL, *sAutoSeekDir = NULL, *sAutoSeekFreq = NULL, *ptrBuf = NULL;
+#ifdef __USE_POSIX_REGEXP__    
     if (regexec(&cmds[AUTOSEEK_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[AUTOSEEK_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         sCmdToken = strtok((char*)buf, delimiters);
         while (sCmdToken){
             if (!strcasecmp(sCmdToken, "AUTOSEEK")) cmdPrimOk++;
@@ -125,9 +138,22 @@ void handle_autoseek(const char *buf){
 void handle_volume(const char *buf){
     int rv = 0, status = 0, len, vol, cmdPrimOk = 0;
     char *sCmdToken = NULL, *sVolume = NULL;
-    regmatch_t pmatch[2];
+#ifdef __USE_POSIX_REGEXP__
+    regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif
+#ifdef __USE_POSIX_REGEXP__
     if (regexec(&cmds[VOLUME_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[VOLUME_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         sCmdToken = strtok((char*)buf, delimiters);
         while (sCmdToken){
             if (!strcasecmp(sCmdToken, "VOLUME")) cmdPrimOk++;
@@ -166,10 +192,23 @@ void handle_volume(const char *buf){
 
 void handle_tune(const char *buf){
     int rv = 0, status = 0, len, tune = 0, cmdPrimOk = 0;
+#ifdef __USE_POSIX_REGEXP__
     regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif
     char *sCmdToken = NULL, *sTuneFreq = NULL, *ptrBuf = NULL;
+#ifdef __USE_POSIX_REGEXP__    
     if (regexec(&cmds[TUNE_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[TUNE_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         // TUN figure
         /*if (!(ptrBuf = (char*)malloc((strlen(buf)+1) * sizeof(char)))) panic("[%s:handle_autoseek(...) @ %d] - malloc failed", __FILE__, __LINE__);
         strncpy(ptrBuf, buf, strlen(buf));
@@ -208,10 +247,23 @@ void handle_tune(const char *buf){
 
 void handle_band(const char *buf){
     int rv = 0, status = 0, len, band = -1, cmdPrimOk = 0;
+#ifdef __USE_POSIX_REGEXP__
     regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif
     char *sCmdToken = NULL, *sBandType = NULL;
+#ifdef __USE_POSIX_REGEXP__    
     if (regexec(&cmds[BAND_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[BAND_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         sCmdToken = strtok((char*)buf, delimiters);
         while (sCmdToken){
             if (!strcasecmp(sCmdToken, "BAND")) cmdPrimOk++;
@@ -262,10 +314,23 @@ void handle_band(const char *buf){
 
 void handle_tunestep(const char *buf){
     int rv = 0, status = 0, len, tunestep = -1, cmdPrimOk = 0;
+#ifdef __USE_POSIX_REGEXP__
     regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif
     char *sCmdToken = NULL, *sTuneStepType = NULL;
+#ifdef __USE_POSIX_REGEXP__    
     if (regexec(&cmds[TUNESTEP_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[TUNESTEP_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         sCmdToken = strtok((char*)buf, delimiters);
         while (sCmdToken){
             if (!strcasecmp(sCmdToken, "TUNESTEP")) cmdPrimOk++;
@@ -315,10 +380,23 @@ void handle_tunestep(const char *buf){
 
 void handle_audio(const char *buf){
     int rv = 0, status = 0, len, track = -1, cmdPrimOk = 0;
+#ifdef __USE_POSIX_REGEXP__
     regmatch_t pmatch[3];
     ssize_t nmatch = 2;
+#endif
+#ifdef __USE_PCRE_REGEXP__
+    const char *error;
+    int erroroffset;
+    int offsetcount;
+    int offsets[(2+1)*3]; // (max_capturing_groups+1)*3
+#endif
     char *sCmdToken = NULL, *sAudioType = NULL;
+#ifdef __USE_POSIX_REGEXP__    
     if (regexec(&cmds[AUDIO_IDX].cmdregexp, buf, nmatch, pmatch, 0) == 0){
+#endif        
+#ifdef __USE_PCRE_REGEXP__
+    if (pcre_exec(cmds[AUDIO_IDX].cmdregexp, NULL, buf, strlen(buf), 0, 0, offsets, (2+1)*3) > 0){
+#endif
         sCmdToken = strtok((char*)buf, delimiters);
         while (sCmdToken){
             if (!strcasecmp(sCmdToken, "AUDIO")) cmdPrimOk++;
