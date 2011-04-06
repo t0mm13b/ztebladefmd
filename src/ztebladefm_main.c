@@ -9,6 +9,7 @@ static void check_select(void);
 static void init_open_commandpipe(void);
 static void init_open_statuspipe(void);
 static int fd_set_blocking(int, int);
+static int fifo_exists(const char *fifoname);
 
 int main(int argc, char **argv){
     //
@@ -22,6 +23,17 @@ int main(int argc, char **argv){
     return 0;
 }
 
+static int fifo_exists(const char *fifoname){
+	struct stat filestat;
+	if (!stat(fifoname, &filestat)){
+		if (S_ISFIFO(filestat.st_mode)){
+			return 0;
+		}
+		return 1;
+	}
+	return 1;
+}
+
 static void tune_in(void){
     int selfd;
     //logmsg("[%s: tune_in(...)] *** ENTER ***", __FILE__);
@@ -31,6 +43,20 @@ static void tune_in(void){
     init_regexps();
     //logmsg("[%s: tune_in(...)] Regexps initialized", __FILE__);
     // BEGIN HERE
+	if (fifo_exists(ZTEBLADEFM_PIPE_CMD)){
+		int rv = mkfifo(ZTEBLADEFM_PIPE_CMD, 0666);
+		if (rv < 0){
+			// handle condition here..
+			panic("[%s:tune_in(...) @ %d] - Could not mkfifo %s.", __FILE__, __LINE__, ZTEBLADEFM_PIPE_CMD);
+		}
+	}
+	if (fifo_exists(ZTEBLADEFM_PIPE_STATUS)){
+		int rv = mkfifo(ZTEBLADEFM_PIPE_STATUS, 0666);
+		if (rv < 0){
+			// handle condition here..
+			panic("[%s:tune_in(...) @ %d] - Could not mkfifo %s.", __FILE__, __LINE__, ZTEBLADEFM_PIPE_STATUS);
+		}
+	}
 #if __t0mm13b_defiant__
     int rv = mkfifo(ZTEBLADEFM_PIPE_CMD, 0666);
     if (rv < 0){
